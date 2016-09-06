@@ -1,0 +1,40 @@
+{
+  "name": "varsom-server",
+  "scripts": {},
+  "env": {
+    "FIREBASE_CLIENT_X509_CERT_URL": {
+      "required": true
+    },
+    "FIREBASE_CLIENT_EMAIL": {
+      "required": true
+    },
+    "FIREBASE_CLIENT_ID": {
+      "required": true
+    },
+    "FIREBASE_DATABASE_URL": {
+      "required": true
+    },
+    "FIREBASE_PRIVATE_KEY": {
+      "required": true
+    },
+    "FIREBASE_PRIVATE_KEY_ID": {
+      "required": true
+    },
+    "FIREBASE_PROJECT_ID": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "scheduler"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
