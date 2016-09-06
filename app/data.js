@@ -61,8 +61,12 @@ function fetchApiUrl(warningType, lang) {
     if (apiUrl && lang === 'en') {
       apiUrl = apiUrl.replace('/1/', '/2/');
     }
-
-    return apiUrl ? apiUrl : Promise.reject("Missing api url: " + warningType);
+  }).then(function() {
+    if (apiUrl) {
+      return apiUrl;
+    } else {
+      return Promise.reject("Missing api url: " + warningType);
+    }
   });
 }
 

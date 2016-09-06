@@ -13,8 +13,12 @@ function fetchDataFromApiUrl(apiUrl) {
     request(options, function(error, response, body) {
       if (!error && response.statusCode === 200) {
         resolve(body);
-      } else {
+      } else if (error) {
         reject(error);
+      } else if (response.statusCode) {
+        reject("Response code " + response.statusCode + " (" + apiUrl + ")");
+      } else {
+        reject("Something wrong with apiUrl " + apiUrl);
       }
     });
   });

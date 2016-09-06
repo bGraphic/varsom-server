@@ -28,7 +28,7 @@ function importForecasts(warningType, lang) {
     console.log(new Date(), 'Areas saved');
     console.log(new Date(), 'Import Complete: ' + warningType + ' forecasts - ' + lang);
   }).catch(function(error) {
-    console.error(error);
+    console.error(new Date(), 'Import error: ', error);
   });
 }
 
@@ -58,6 +58,7 @@ module.exports = {
     }).then(function() {
       return importLandslideForecasts();
     }).then(function() {
+      console.log(new Date(), "Imported all forecasts");
       return "Imported all forecasts";
     });
   }
