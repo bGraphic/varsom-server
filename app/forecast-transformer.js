@@ -1,7 +1,3 @@
-/*jslint node: true, nomen: true, vars: true */
-
-'use strict';
-
 var _ = require('underscore');
 
 function extractName(areaJson) {
@@ -9,12 +5,11 @@ function extractName(areaJson) {
 }
 
 function extractId(areaJson) {
-  if (parseInt(areaJson.Id) < 10) {
-    return "0" + parseInt(areaJson.Id);
+  if (parseInt(areaJson.Id, 10) < 10) {
+    return "0" + parseInt(areaJson.Id, 10);
   } else {
     return areaJson.Id;
   }
-
 }
 
 function extractWarningLevel(warningJson) {
@@ -52,7 +47,7 @@ function cleanWarning(warningJson) {
 
 function cleanForecast(forecastJson) {
   var cleanedForecastJson = {};
-  _.each(forecastJson, function (warningJson, key) {
+  _.each(forecastJson, function(warningJson, key) {
     cleanedForecastJson["day" + key] = cleanWarning(warningJson);
   });
 
@@ -69,7 +64,7 @@ function extractForecast(areaJson) {
   }
 }
 
-function extractChildAreasJson(areaJson)  {
+function extractChildAreasJson(areaJson) {
   if (areaJson.hasOwnProperty('MunicipalityList')) {
     return areaJson.MunicipalityList;
   }
@@ -77,8 +72,8 @@ function extractChildAreasJson(areaJson)  {
 
 function createHighestLevelForecast(forecasts) {
   var highestForecast = [];
-  _.each(forecasts, function (forecast) {
-    _.each(forecast, function (warning, i) {
+  _.each(forecasts, function(forecast) {
+    _.each(forecast, function(warning, i) {
       if (!highestForecast[i] || (highestForecast[i] < extractWarningLevel(warning))) {
         highestForecast[i] = warning;
       }
@@ -88,14 +83,13 @@ function createHighestLevelForecast(forecasts) {
 }
 
 function transformToForecast(areasJson) {
-
   if (!areasJson || areasJson.length === 0) {
     return [];
   }
 
   var areas = [];
 
-  _.each(areasJson, function (areaJson) {
+  _.each(areasJson, function(areaJson) {
     var area = {
       Id: extractId(areaJson),
       Name: extractName(areaJson),
@@ -114,14 +108,13 @@ function transformToForecast(areasJson) {
 }
 
 function transformToAreas(areasJson) {
-
   if (!areasJson || areasJson.length === 0) {
     return [];
   }
 
   var areas = [];
 
-  _.each(areasJson, function (areaJson) {
+  _.each(areasJson, function(areaJson) {
     var area = {
       Id: extractId(areaJson),
       Name: extractName(areaJson),
@@ -138,15 +131,14 @@ function denormalize(areasJson) {
   var parents = {};
   var children = {};
 
-  _.each(areasJson, function (areaJson) {
-
+  _.each(areasJson, function(areaJson) {
     // Only import avalanche regions, ie. with id under 50.
     // Also works for counties since they only run to 20.
-    if (parseInt(areaJson.Id) < 50) {
+    if (parseInt(areaJson.Id, 10) < 50) {
       parents["id" + areaJson.Id] = areaJson;
       children["id" + areaJson.Id] = {};
 
-      _.each(areaJson.Children, function (childArea) {
+      _.each(areaJson.Children, function(childArea) {
         children["id" + areaJson.Id]["id" + childArea.Id] = childArea;
       });
 
@@ -161,12 +153,11 @@ function denormalize(areasJson) {
 }
 
 module.exports = {
-  transformToForecast: function (json) {
+  transformToForecast: function(json) {
     return denormalize(transformToForecast(json));
   },
-  transformToAreas: function (json) {
+  transformToAreas: function(json) {
     return denormalize(transformToAreas(json));
   }
-
 
 };

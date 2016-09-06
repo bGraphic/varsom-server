@@ -1,0 +1,9 @@
+{
+  "extends": "google",
+  "rules": {
+    "require-jsdoc": 0,
+    "camelcase": 1,
+    "no-else-return": 0,
+    "max-len": 0
+  }
+}
