@@ -132,18 +132,14 @@ function denormalize(areasJson) {
   var children = {};
 
   _.each(areasJson, function(areaJson) {
-    // Only import avalanche regions, ie. with id under 50.
-    // Also works for counties since they only run to 20.
-    if (parseInt(areaJson.Id, 10) < 50) {
-      parents["id" + areaJson.Id] = areaJson;
-      children["id" + areaJson.Id] = {};
+    parents["id" + areaJson.Id] = areaJson;
+    children["id" + areaJson.Id] = {};
 
-      _.each(areaJson.Children, function(childArea) {
-        children["id" + areaJson.Id]["id" + childArea.Id] = childArea;
-      });
+    _.each(areaJson.Children, function(childArea) {
+      children["id" + areaJson.Id]["id" + childArea.Id] = childArea;
+    });
 
-      delete parents["id" + areaJson.Id].Children;
-    }
+    delete parents["id" + areaJson.Id].Children;
   });
 
   return {
