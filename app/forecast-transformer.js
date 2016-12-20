@@ -22,6 +22,12 @@ function extractWarningLevel(warningJson) {
   }
 }
 
+function extractTypeId(areaJson) {
+    if (areaJson.hasOwnProperty('TypeId')) {
+      return areaJson.TypeId;
+    }
+}
+
 function cleanWarning(warningJson) {
   // Deleting unused and/or unnecessary fields
   warningJson.Rating = extractWarningLevel(warningJson);
@@ -96,6 +102,10 @@ function transformToForecast(areasJson) {
       Forecast: cleanForecast(extractForecast(areaJson)),
       Children: transformToForecast(extractChildAreasJson(areaJson))
     };
+
+    if(extractTypeId(areaJson)) {
+      area.TypeId = extractTypeId(areaJson);
+    }
 
     if (area.Children.length > 0) {
       area.Forecast = createHighestLevelForecast(_.pluck(area.Children, 'Forecast'));
