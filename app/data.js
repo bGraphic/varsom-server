@@ -1,3 +1,5 @@
+var admin = require("firebase-admin");
+
 var serviceAccount = {
   type: "service_account",
   project_id: process.env.FIREBSE_PROJECT_ID,
@@ -13,13 +15,12 @@ var serviceAccount = {
 
 var databaseUrl = process.env.FIREBASE_DATABASE_URL;
 
-var firebase = require("firebase");
-firebase.initializeApp({
-  serviceAccount: serviceAccount,
-  databaseURL: databaseUrl
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
-var db = firebase.database();
+var db = admin.database();
 
 function saveForecast(warningType, json) {
   if (warningType === "avalanche") {
