@@ -33,9 +33,7 @@ function importForecasts(warningType, lang) {
 }
 
 function importAvalancheForecasts() {
-  return importForecasts('avalanche', 'en').then(function() {
-    return importForecasts('avalanche', 'no');
-  });
+  return importForecasts('avalanche', 'no');
 }
 
 function importFloodForecasts() {
