@@ -37,21 +37,6 @@ function saveForecast(warningType, json) {
   return ref.set(json);
 }
 
-function saveAreas(warningType, json) {
-  if (warningType === "avalanche") {
-    json.regions = json.parents;
-  } else {
-    json.counties = json.parents;
-    json.municipalities = json.children;
-  }
-
-  delete json.parents;
-  delete json.children;
-
-  var ref = db.ref("areas");
-  return ref.update(json);
-}
-
 function fetchApiUrl(warningType, lang) {
   var apiRef = db.ref("api/" + warningType);
   var apiUrl = null;
@@ -73,6 +58,5 @@ function fetchApiUrl(warningType, lang) {
 
 module.exports = {
   fetchApiUrl: fetchApiUrl,
-  saveForecast: saveForecast,
-  saveAreas: saveAreas
+  saveForecast: saveForecast
 };

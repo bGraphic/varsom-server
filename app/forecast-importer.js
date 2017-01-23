@@ -8,28 +8,27 @@ function importForecasts(warningType, lang) {
   }
 
   console.log(new Date(), 'Import: ' + warningType + ' forecasts - ' + lang);
-  return Promise.resolve().then(function() {
-    return fetcher.fetchJson(warningType, lang);
-  }).then(function(json) {
-    if (warningType === 'avalanche') {
-      return json;
-    } else {
-      return json.CountyList;
-    }
-  }).then(function(json) {
-    console.log(new Date(), 'Json fetched');
-    return data.saveForecast(warningType, transformer.transformToForecast(json)).then(function() {
-      return json;
+
+  return fetcher.fetchJson(warningType, lang)
+    .then(function(json) {
+      if (warningType === 'avalanche') {
+        return json;
+      } else {
+        return json.CountyList;
+      }
+    })
+    .then(function(json) {
+      console.log(new Date(), 'Json fetched');
+      return data.saveForecast(warningType, transformer.transformToForecast(json)).then(function() {
+        return json;
+      });
+    })
+    .then(function(json) {
+      console.log(new Date(), 'Import Complete: ' + warningType + ' forecasts - ' + lang);
+    })
+    .catch(function(error) {
+      console.error(new Date(), 'Import error: ', error);
     });
-  }).then(function(json) {
-    console.log(new Date(), 'Forecast saved');
-    return data.saveAreas(warningType, transformer.transformToAreas(json));
-  }).then(function() {
-    console.log(new Date(), 'Areas saved');
-    console.log(new Date(), 'Import Complete: ' + warningType + ' forecasts - ' + lang);
-  }).catch(function(error) {
-    console.error(new Date(), 'Import error: ', error);
-  });
 }
 
 function importAvalancheForecasts() {

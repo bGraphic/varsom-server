@@ -23,9 +23,9 @@ function extractWarningLevel(warningJson) {
 }
 
 function extractTypeId(areaJson) {
-    if (areaJson.hasOwnProperty('TypeId')) {
-      return areaJson.TypeId;
-    }
+  if (areaJson.hasOwnProperty('TypeId')) {
+    return areaJson.TypeId;
+  }
 }
 
 function cleanWarning(warningJson) {
