@@ -39,21 +39,21 @@ function saveForecast(warningType, json) {
 
 function fetchApiUrl(warningType, lang) {
   var apiRef = db.ref("api/" + warningType);
-  var apiUrl = null;
 
-  return apiRef.once("value", function(data) {
-    apiUrl = data.val();
+  return apiRef.once("value")
+    .then(function(snapshot) {
+      var apiUrl = snapshot.val();
 
-    if (apiUrl && lang === 'en') {
-      apiUrl = apiUrl.replace('/1/', '/2/');
-    }
-  }).then(function() {
-    if (apiUrl) {
-      return apiUrl;
-    } else {
-      return Promise.reject("Missing api url: " + warningType);
-    }
-  });
+      if (apiUrl && lang === 'en') {
+        apiUrl = apiUrl.replace('/1/', '/2/');
+      }
+
+      if (apiUrl) {
+        return apiUrl;
+      } else {
+        return Promise.reject("Missing api url: " + warningType);
+      }
+    });
 }
 
 module.exports = {
