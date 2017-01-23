@@ -35,7 +35,10 @@ function saveForecast(warningType, json) {
   delete json.children;
 
   var ref = db.ref("forecast/" + warningType);
-  return ref.set(json);
+  return ref.set(json)
+    .then(function () {
+      return json;
+    });
 }
 
 function fetchForecast(warningType) {

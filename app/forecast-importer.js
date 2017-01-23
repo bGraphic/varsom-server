@@ -19,11 +19,9 @@ function importForecasts(warningType, lang) {
     })
     .then(function(json) {
       console.log(new Date(), 'Json fetched');
-      return data.saveForecast(warningType, transformer.transformToForecast(json)).then(function() {
-        return json;
-      });
+      return data.saveForecast(warningType, transformer.transformToForecast(json));
     })
-    .then(function(json) {
+    .then(function(transformedJson) {
       console.log(new Date(), 'Import Complete: ' + warningType + ' forecasts - ' + lang);
     })
     .catch(function(error) {
