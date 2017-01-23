@@ -37,6 +37,13 @@ function cleanWarning(warningJson) {
   delete warningJson.UtmEast;
   delete warningJson.UtmNorth;
   delete warningJson.UtmZone;
+  delete warningJson.LangKey;
+  delete warningJson.RegId;
+  delete warningJson.RegionId;
+  delete warningJson.RegionName;
+  delete warningJson.RegionTypeId;
+  delete warningJson.RegionTypeName;
+  delete warningJson.MunicipalityName;
 
   // Flood, Landlside
   delete warningJson.ActivityLevel;
@@ -47,6 +54,7 @@ function cleanWarning(warningJson) {
   delete warningJson.Id;
   delete warningJson.MasterId;
   delete warningJson.EventId;
+  delete warningJson.Version;
 
   return warningJson;
 }
