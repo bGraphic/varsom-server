@@ -1,4 +1,5 @@
 var admin = require("firebase-admin");
+var _ = require('underscore');
 
 var serviceAccount = {
   type: "service_account",
@@ -56,7 +57,18 @@ function fetchApiUrl(warningType, lang) {
     });
 }
 
+function fetchSubscriptions(areaId) {
+  var subscriptionsRef = db.ref("subscriptions/id" + areaId);
+
+  return subscriptionsRef.once("value")
+    .then(function(snapshot) {
+      var subscriptions = snapshot.val();
+      return _.keys(subscriptions);
+    });
+}
+
 module.exports = {
   fetchApiUrl: fetchApiUrl,
-  saveForecast: saveForecast
+  saveForecast: saveForecast,
+  fetchSubscriptions: fetchSubscriptions
 };
