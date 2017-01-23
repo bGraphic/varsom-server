@@ -38,6 +38,15 @@ function saveForecast(warningType, json) {
   return ref.set(json);
 }
 
+function fetchForecast(warningType) {
+  var ref = db.ref("forecast/" + warningType);
+
+  return ref.once("value")
+    .then(function(snapshot) {
+      return snapshot.val();
+    });
+}
+
 function fetchApiUrl(warningType, lang) {
   var apiRef = db.ref("api/" + warningType);
 
@@ -69,6 +78,7 @@ function fetchSubscriptions(areaId) {
 
 module.exports = {
   fetchApiUrl: fetchApiUrl,
+  fetchForecast: fetchForecast,
   saveForecast: saveForecast,
   fetchSubscriptions: fetchSubscriptions
 };
