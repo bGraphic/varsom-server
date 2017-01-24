@@ -14,8 +14,6 @@ var serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_X509_CERT_URL
 };
 
-var databaseUrl = process.env.FIREBASE_DATABASE_URL;
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: process.env.FIREBASE_DATABASE_URL
@@ -23,7 +21,7 @@ admin.initializeApp({
 
 var db = admin.database();
 
-function saveForecast(warningType, json) {
+function saveForecastTree(warningType, json) {
   if (warningType === "avalanche") {
     json.regions = json.parents;
   } else {
@@ -35,13 +33,10 @@ function saveForecast(warningType, json) {
   delete json.children;
 
   var ref = db.ref("forecast/" + warningType);
-  return ref.set(json)
-    .then(function () {
-      return json;
-    });
+  return ref.set(json);
 }
 
-function fetchForecast(warningType) {
+function fetchForecastTree(warningType) {
   var ref = db.ref("forecast/" + warningType);
 
   return ref.once("value")
@@ -81,7 +76,7 @@ function fetchSubscriptions(areaId) {
 
 module.exports = {
   fetchApiUrl: fetchApiUrl,
-  fetchForecast: fetchForecast,
-  saveForecast: saveForecast,
+  fetchForecastTree: fetchForecastTree,
+  saveForecastTree: saveForecastTree,
   fetchSubscriptions: fetchSubscriptions
 };
