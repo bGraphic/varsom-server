@@ -37,6 +37,24 @@ function compareMicroBlogPosts(oldForecast, forecast) {
   }
 }
 
+function mostImportantAvalancheProblem(forecast) {
+  if(forecast.day0 && forecast.day0.AvalancheProblems && forecast.day0.AvalancheProblems[0]) {
+    return {
+      problemTypeId: forecast.day0.AvalancheProblems[0].AvalancheProblemTypeId,
+      causeId: forecast.day0.AvalancheProblems[0].AvalCauseId
+    }
+  }
+}
+
+function compareMostImportantAvalancheProblem(oldForecast, forecast) {
+  var oldValue = mostImportantAvalancheProblem(oldForecast);
+  var newValue = mostImportantAvalancheProblem(forecast);
+
+  if(oldValue && newValue && (oldValue.problemTypeId !== newValue.problemTypeId || oldValue.causeId !== newValue.causeId)) {
+    return "Endring i det viktigste snøskredproblemet.";
+  }
+}
+
 function notifySubscribers(warningType, areaId, areaName, message) {
   if(!message) {
     return;
@@ -97,8 +115,14 @@ function compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compar
 
 module.exports = {
   highestRatingChanged: function (warningType, oldForecastTree, forecastTree) {
-    var highestForecsatRatingNotifications = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareHighestForecastRating);
-    var microBlogPostNotification = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMicroBlogPosts);
-    return Promise.all([].concat(highestForecsatRatingNotifications, microBlogPostNotification));
+    var notifications = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareHighestForecastRating);
+
+    if('avalanche' !== warningType) {
+      notifications = notifications.concat(compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMicroBlogPosts));
+    } else {
+      notifications = notifications.concat(compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMostImportantAvalancheProblem));
+    }
+
+    return Promise.all(notifications);
   }
 };
