@@ -17,6 +17,26 @@ function compareHighestForecastRating(oldForecast, forecast) {
   }
 }
 
+function newestMicroBlogPostDate(forecast) {
+  return _.reduce(_.values(forecast), function (memo, warning) {
+    if(warning.MicroBlogPostList && warning.MicroBlogPostList[0] && warning.MicroBlogPostList[0].DateTime) {
+      var date = new Date(warning.MicroBlogPostList[0].DateTime);
+      return date > memo ? date : memo;
+    } else {
+      return memo;
+    }
+  }, new Date('2000-01-01T00:00:00'));
+}
+
+function compareMicroBlogPosts(oldForecast, forecast) {
+  var oldValue = newestMicroBlogPostDate(oldForecast);
+  var newValue = newestMicroBlogPostDate(forecast);
+
+  if(newValue > oldValue) {
+    return "Ny varslingsoppdatering."
+  }
+}
+
 function notifySubscribers(warningType, areaId, areaName, message) {
   if(!message) {
     return;
@@ -72,11 +92,13 @@ function compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compar
       promises = promises.concat(branchPromises);
     }
   });
-  return Promise.all(promises);
+  return promises;
 }
 
 module.exports = {
   highestRatingChanged: function (warningType, oldForecastTree, forecastTree) {
-    return compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareHighestForecastRating)
+    var highestForecsatRatingNotifications = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareHighestForecastRating);
+    var microBlogPostNotification = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMicroBlogPosts);
+    return Promise.all([].concat(highestForecsatRatingNotifications, microBlogPostNotification));
   }
 };
