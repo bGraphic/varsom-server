@@ -56,6 +56,15 @@ function cleanWarning(warningJson) {
   delete warningJson.EventId;
   delete warningJson.Version;
 
+  if(warningJson.AvalancheProblems) {
+    warningJson.AvalancheProblems = _.sortBy(warningJson.AvalancheProblems, 'AvalancheProblemId');
+  }
+
+  if(warningJson.MicroBlogPostList) {
+    warningJson.MicroBlogPostList = _.sortBy(warningJson.AvalancheProblems, 'DateTime');
+    warningJson.MicroBlogPostList.reverse();
+  }
+
   return warningJson;
 }
 
@@ -169,9 +178,5 @@ function denormalize(areasJson) {
 module.exports = {
   transformToForecast: function(json) {
     return denormalize(transformToForecast(json));
-  },
-  transformToAreas: function(json) {
-    return denormalize(transformToAreas(json));
   }
-
 };

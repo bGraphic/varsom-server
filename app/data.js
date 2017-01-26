@@ -1,4 +1,5 @@
 var admin = require("firebase-admin");
+var _ = require('underscore');
 
 var serviceAccount = {
   type: "service_account",
@@ -13,8 +14,6 @@ var serviceAccount = {
   client_x509_cert_url: process.env.FIREBASE_X509_CERT_URL
 };
 
-var databaseUrl = process.env.FIREBASE_DATABASE_URL;
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: process.env.FIREBASE_DATABASE_URL
@@ -22,7 +21,7 @@ admin.initializeApp({
 
 var db = admin.database();
 
-function saveForecast(warningType, json) {
+function saveForecastTree(warningType, json) {
   if (warningType === "avalanche") {
     json.regions = json.parents;
   } else {
@@ -37,26 +36,47 @@ function saveForecast(warningType, json) {
   return ref.set(json);
 }
 
+function fetchForecastTree(warningType) {
+  var ref = db.ref("forecast/" + warningType);
+
+  return ref.once("value")
+    .then(function(snapshot) {
+      return snapshot.val();
+    });
+}
+
 function fetchApiUrl(warningType, lang) {
   var apiRef = db.ref("api/" + warningType);
-  var apiUrl = null;
 
-  return apiRef.once("value", function(data) {
-    apiUrl = data.val();
+  return apiRef.once("value")
+    .then(function(snapshot) {
+      var apiUrl = snapshot.val();
 
-    if (apiUrl && lang === 'en') {
-      apiUrl = apiUrl.replace('/1/', '/2/');
-    }
-  }).then(function() {
-    if (apiUrl) {
-      return apiUrl;
-    } else {
-      return Promise.reject("Missing api url: " + warningType);
-    }
-  });
+      if (apiUrl && lang === 'en') {
+        apiUrl = apiUrl.replace('/1/', '/2/');
+      }
+
+      if (apiUrl) {
+        return apiUrl;
+      } else {
+        return Promise.reject("Missing api url: " + warningType);
+      }
+    });
+}
+
+function fetchSubscriptions(areaId) {
+  var subscriptionsRef = db.ref("subscriptions/id" + areaId);
+
+  return subscriptionsRef.once("value")
+    .then(function(snapshot) {
+      var subscriptions = snapshot.val();
+      return _.keys(subscriptions);
+    });
 }
 
 module.exports = {
   fetchApiUrl: fetchApiUrl,
-  saveForecast: saveForecast
+  fetchForecastTree: fetchForecastTree,
+  saveForecastTree: saveForecastTree,
+  fetchSubscriptions: fetchSubscriptions
 };
