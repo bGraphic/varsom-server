@@ -4,10 +4,6 @@ var request = require("request");
 
 var data = require('../app/data');
 
-var ionicKeys = {
-  token: process.env.IONIC_PUSH_TOKEN
-};
-
 var parseKeys = {
   app: process.env.PARSE_APP_ID,
   master: process.env.PARSE_MASTER_KEY,
@@ -18,38 +14,6 @@ Parse.initialize(parseKeys.app, parseKeys.javascript, parseKeys.master);
 Parse.Cloud.useMasterKey();
 
 var promises = [];
-
-function registerDeviceToken(deviceToken) {
-  if(!deviceToken) {
-    return;
-  }
-
-  var options = {
-    method: 'POST',
-    url: 'https://api.ionic.io/push/tokens',
-    headers: {
-      'Authorization': 'Bearer ' + ionicKeys.token,
-      'Content-Type': 'application/json'
-    },
-    json: {
-      token: deviceToken
-    }
-  };
-
-  return new Promise(function (resolve, reject) {
-    request(options, function (error, response, body) {
-      if (!error && response.statusCode === 201) {
-        resolve(body.data);
-      } else if (error) {
-        reject(error);
-      } else if (body.error) {
-        reject(body.error);
-      } else {
-        reject(body);
-      }
-    });
-  });
-}
 
 function importFavorite(installation) {
   var deviceToken = installation.get('deviceToken');
@@ -73,13 +37,6 @@ function importFavorite(installation) {
 
   console.log(deviceToken);
   if(deviceToken) {
-    promises.push(
-      registerDeviceToken(deviceToken)
-        .then(function (result) {
-          console.log("Registered deviceToken", JSON.stringify(result));
-        })
-    );
-
     promises.push(data.saveParseChannels(deviceToken, channels)
       .then(function () {
         console.log("Saved parse channels for ", deviceToken);
