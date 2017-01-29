@@ -79,15 +79,11 @@ function importFavorite(installation) {
           console.log("Registered deviceToken", JSON.stringify(result));
         })
     );
-    /*promise = promise.then(function (result) {
-      return data.saveParseChannels(deviceToken, channels);
-    }).then(function (result) {
-      console.log("Saved parse channels", JSON.stringify(result));
-      return registerDeviceToken(deviceToken);
-    }).then(function (result) {
-      console.log("Registered deviceToken", JSON.stringify(result));
-      return Promise.resolve();
-    });*/
+
+    promises.push(data.saveParseChannels(deviceToken, channels)
+      .then(function () {
+        console.log("Saved parse channels for ", deviceToken);
+      }));
   }
 }
 
