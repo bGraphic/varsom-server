@@ -74,9 +74,18 @@ function fetchSubscriptions(areaId) {
     });
 }
 
+function saveParseChannels(deviceToken, parseFavorites) {
+  if(!deviceToken) {
+    return;
+  }
+  var ref = db.ref("/parse_channels/" + deviceToken);
+  return ref.set(parseFavorites);
+}
+
 module.exports = {
   fetchApiUrl: fetchApiUrl,
   fetchForecastTree: fetchForecastTree,
   saveForecastTree: saveForecastTree,
-  fetchSubscriptions: fetchSubscriptions
+  fetchSubscriptions: fetchSubscriptions,
+  saveParseChannels: saveParseChannels
 };
