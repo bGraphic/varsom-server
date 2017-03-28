@@ -97,7 +97,7 @@ function createHighestLevelForecast(forecasts) {
   var highestForecast = [];
   _.each(forecasts, function(forecast) {
     _.each(forecast, function(warning, i) {
-      if (!highestForecast[i] || (highestForecast[i] < extractWarningLevel(warning))) {
+      if (!highestForecast[i] || (extractWarningLevel(highestForecast[i]) < extractWarningLevel(warning))) {
         highestForecast[i] = warning;
       }
     });
