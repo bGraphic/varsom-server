@@ -20,7 +20,7 @@ function importFavorite(installation) {
   var channels = installation.get('channels');
 
   channels = _.filter(channels, function (channel) {
-    if(channel.includes('AvalancheRegion-')) {
+    if (channel.includes('AvalancheRegion-')) {
       var regionId = parseInt(channel.replace("AvalancheRegion-", ""));
       return regionId >= 3000;
     } else {
@@ -36,7 +36,7 @@ function importFavorite(installation) {
   });
 
   console.log(deviceToken);
-  if(deviceToken) {
+  if (deviceToken) {
     promises.push(data.saveParseChannels(deviceToken, channels)
       .then(function () {
         console.log("Saved parse channels for ", deviceToken);
@@ -57,6 +57,6 @@ importFavorites()
   .then(function () {
     console.log("All done");
   })
-  .catch(function(error) {
+  .catch(function (error) {
     console.log("Error: ", JSON.stringify(error))
   });

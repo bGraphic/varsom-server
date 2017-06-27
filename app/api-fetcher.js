@@ -9,8 +9,8 @@ function fetchDataFromApiUrl(apiUrl) {
     }
   };
 
-  return new Promise(function(resolve, reject) {
-    request(options, function(error, response, body) {
+  return new Promise(function (resolve, reject) {
+    request(options, function (error, response, body) {
       if (!error && response.statusCode === 200) {
         resolve(body);
       } else if (error) {
@@ -25,13 +25,13 @@ function fetchDataFromApiUrl(apiUrl) {
 }
 
 function fetchJson(warningType, lang) {
-  return Promise.resolve().then(function() {
+  return Promise.resolve().then(function () {
     return data.fetchApiUrl(warningType, lang);
-  }).then(function(url) {
+  }).then(function (url) {
     return fetchDataFromApiUrl(url);
-  }).then(function(data) {
+  }).then(function (data) {
     return JSON.parse(data);
-  }).then(function(json) {
+  }).then(function (json) {
     return json;
   });
 }

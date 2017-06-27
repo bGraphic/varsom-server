@@ -18,7 +18,7 @@ Parse.Cloud.useMasterKey();
 var promises = [];
 
 function registerDeviceToken(deviceToken) {
-  if(!deviceToken) {
+  if (!deviceToken) {
     return;
   }
 
@@ -53,7 +53,7 @@ function importDeviceToken(installation) {
   var deviceToken = installation.get('deviceToken');
 
   console.log(deviceToken);
-  if(deviceToken) {
+  if (deviceToken) {
     promises.push(
       registerDeviceToken(deviceToken)
         .then(function (result) {
@@ -76,6 +76,6 @@ importDeviceTokens()
   .then(function () {
     console.log("All done");
   })
-  .catch(function(error) {
+  .catch(function (error) {
     console.log("Error: ", JSON.stringify(error))
   });

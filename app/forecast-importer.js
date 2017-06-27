@@ -21,14 +21,14 @@ function importForecasts(warningType, lang) {
       oldForecastTree = forecast;
       return fetcher.fetchJson(warningType, lang);
     })
-    .then(function(json) {
+    .then(function (json) {
       if (warningType === 'avalanche') {
         return json;
       } else {
         return json.CountyList;
       }
     })
-    .then(function(json) {
+    .then(function (json) {
       console.log(new Date() + ' Json fetched');
       return data.saveForecastTree(warningType, transformer.transformToForecast(json));
     })
@@ -42,19 +42,19 @@ function importForecasts(warningType, lang) {
     .then(function (notifications) {
       var log = "none";
 
-      if(notifications.length > 0) {
+      if (notifications.length > 0) {
         log = _.reduce(notifications, function (memo, notification) {
-            return memo + "\n" + notification.app_id + " / " + notification.state + " / " + notification.config.tokens.length + " device tokens / " + JSON.stringify(notification.config.notification);
-          }, '');
+          return memo + "\n" + notification.app_id + " / " + notification.state + " / " + notification.config.tokens.length + " device tokens / " + JSON.stringify(notification.config.notification);
+        }, '');
       }
 
-      console.log(new Date() + ' Notifications: '  + log);
+      console.log(new Date() + ' Notifications: ' + log);
 
     })
-    .then(function() {
+    .then(function () {
       console.log(new Date() + ' Import Complete: ' + warningType + ' forecasts - ' + lang);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.error(new Date() + ' Import error: ', error);
     });
 }
@@ -75,14 +75,14 @@ module.exports = {
   importAvalancheForecasts: importAvalancheForecasts,
   importFloodForecasts: importFloodForecasts,
   importLandslideForecasts: importLandslideForecasts,
-  importAllForecasts: function() {
-    return Promise.resolve().then(function() {
+  importAllForecasts: function () {
+    return Promise.resolve().then(function () {
       return importAvalancheForecasts();
-    }).then(function() {
+    }).then(function () {
       return importFloodForecasts();
-    }).then(function() {
+    }).then(function () {
       return importLandslideForecasts();
-    }).then(function() {
+    }).then(function () {
       console.log(new Date(), "Imported all forecasts");
       return "Imported all forecasts";
     });

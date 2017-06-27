@@ -15,8 +15,8 @@ var serviceAccount = {
 };
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
 var db = admin.database();
@@ -40,7 +40,7 @@ function fetchForecastTree(warningType) {
   var ref = db.ref("forecast/" + warningType);
 
   return ref.once("value")
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       return snapshot.val();
     });
 }
@@ -49,7 +49,7 @@ function fetchApiUrl(warningType, lang) {
   var apiRef = db.ref("api/" + warningType);
 
   return apiRef.once("value")
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var apiUrl = snapshot.val();
 
       if (apiUrl && lang === 'en') {
@@ -68,14 +68,14 @@ function fetchSubscriptions(areaId) {
   var subscriptionsRef = db.ref("subscriptions/id" + areaId);
 
   return subscriptionsRef.once("value")
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var subscriptions = snapshot.val();
       return _.keys(subscriptions);
     });
 }
 
 function saveParseChannels(deviceToken, parseFavorites) {
-  if(!deviceToken) {
+  if (!deviceToken) {
     return;
   }
   var ref = db.ref("/parse_channels/" + deviceToken);

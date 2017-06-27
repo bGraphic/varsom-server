@@ -12,14 +12,14 @@ function compareHighestForecastRating(oldForecast, forecast) {
   var oldValue = highestForecastRating(oldForecast);
   var newValue = highestForecastRating(forecast);
 
-  if(oldValue !== newValue) {
+  if (oldValue !== newValue) {
     return "Høyeste varslingsnivå endret fra " + oldValue + " til " + newValue + " for de neste 3 dagene."
   }
 }
 
 function newestMicroBlogPostDate(forecast) {
   return _.reduce(_.values(forecast), function (memo, warning) {
-    if(warning.MicroBlogPostList && warning.MicroBlogPostList[0] && warning.MicroBlogPostList[0].DateTime) {
+    if (warning.MicroBlogPostList && warning.MicroBlogPostList[0] && warning.MicroBlogPostList[0].DateTime) {
       var date = new Date(warning.MicroBlogPostList[0].DateTime);
       return date > memo ? date : memo;
     } else {
@@ -32,13 +32,13 @@ function compareMicroBlogPosts(oldForecast, forecast) {
   var oldValue = newestMicroBlogPostDate(oldForecast);
   var newValue = newestMicroBlogPostDate(forecast);
 
-  if(newValue > oldValue) {
+  if (newValue > oldValue) {
     return "Ny varslingsoppdatering."
   }
 }
 
 function mostImportantAvalancheProblem(forecast) {
-  if(forecast.day0 && forecast.day0.AvalancheProblems && forecast.day0.AvalancheProblems[0]) {
+  if (forecast.day0 && forecast.day0.AvalancheProblems && forecast.day0.AvalancheProblems[0]) {
     return {
       problemTypeId: forecast.day0.AvalancheProblems[0].AvalancheProblemTypeId,
       causeId: forecast.day0.AvalancheProblems[0].AvalCauseId
@@ -50,13 +50,13 @@ function compareMostImportantAvalancheProblem(oldForecast, forecast) {
   var oldValue = mostImportantAvalancheProblem(oldForecast);
   var newValue = mostImportantAvalancheProblem(forecast);
 
-  if(oldValue && newValue && (oldValue.problemTypeId !== newValue.problemTypeId || oldValue.causeId !== newValue.causeId)) {
+  if (oldValue && newValue && (oldValue.problemTypeId !== newValue.problemTypeId || oldValue.causeId !== newValue.causeId)) {
     return "Endring i det viktigste snøskredproblemet.";
   }
 }
 
 function notifySubscribers(warningType, areaId, areaName, message) {
-  if(!message) {
+  if (!message) {
     return;
   }
 
@@ -88,7 +88,7 @@ function compareAndNotifyBranch(warningType, oldForecastBranch, forecastBranch, 
   _.each(_.keys(oldForecastBranch), function (areaIdKey) {
     var message = compareFunction(oldForecastBranch[areaIdKey].Forecast, forecastBranch[areaIdKey].Forecast);
     var promise = notifySubscribers(warningType, oldForecastBranch[areaIdKey].Id, oldForecastBranch[areaIdKey].Name, message);
-    if(promise) {
+    if (promise) {
       promises.push(promise);
     }
   });
@@ -98,7 +98,7 @@ function compareAndNotifyBranch(warningType, oldForecastBranch, forecastBranch, 
 function compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareFunction) {
   var promises = [];
   _.each(_.keys(oldForecastTree), function (areaTypeKey) {
-    if("municipalities" === areaTypeKey) {
+    if ("municipalities" === areaTypeKey) {
       _.each(_.keys(oldForecastTree[areaTypeKey]), function (countyIdKey) {
         var oldBranch = oldForecastTree[areaTypeKey][countyIdKey];
         var branch = forecastTree[areaTypeKey][countyIdKey];
@@ -117,7 +117,7 @@ module.exports = {
   highestRatingChanged: function (warningType, oldForecastTree, forecastTree) {
     var notifications = compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareHighestForecastRating);
 
-    if('avalanche' !== warningType) {
+    if ('avalanche' !== warningType) {
       notifications = notifications.concat(compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMicroBlogPosts));
     } else {
       notifications = notifications.concat(compareAndNotifyTree(warningType, oldForecastTree, forecastTree, compareMostImportantAvalancheProblem));

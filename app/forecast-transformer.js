@@ -56,11 +56,11 @@ function cleanWarning(warningJson) {
   delete warningJson.EventId;
   delete warningJson.Version;
 
-  if(warningJson.AvalancheProblems) {
+  if (warningJson.AvalancheProblems) {
     warningJson.AvalancheProblems = _.sortBy(warningJson.AvalancheProblems, 'AvalancheProblemId');
   }
 
-  if(warningJson.MicroBlogPostList) {
+  if (warningJson.MicroBlogPostList) {
     warningJson.MicroBlogPostList = _.sortBy(warningJson.AvalancheProblems, 'DateTime');
     warningJson.MicroBlogPostList.reverse();
   }
@@ -70,7 +70,7 @@ function cleanWarning(warningJson) {
 
 function cleanForecast(forecastJson) {
   var cleanedForecastJson = {};
-  _.each(forecastJson, function(warningJson, key) {
+  _.each(forecastJson, function (warningJson, key) {
     cleanedForecastJson["day" + key] = cleanWarning(warningJson);
   });
 
@@ -95,8 +95,8 @@ function extractChildAreasJson(areaJson) {
 
 function createHighestLevelForecast(forecasts) {
   var highestForecast = [];
-  _.each(forecasts, function(forecast) {
-    _.each(forecast, function(warning, i) {
+  _.each(forecasts, function (forecast) {
+    _.each(forecast, function (warning, i) {
       if (!highestForecast[i] || (extractWarningLevel(highestForecast[i]) < extractWarningLevel(warning))) {
         highestForecast[i] = warning;
       }
@@ -112,7 +112,7 @@ function transformToForecast(areasJson) {
 
   var areas = [];
 
-  _.each(areasJson, function(areaJson) {
+  _.each(areasJson, function (areaJson) {
     var area = {
       Id: extractId(areaJson),
       Name: extractName(areaJson),
@@ -120,7 +120,7 @@ function transformToForecast(areasJson) {
       Children: transformToForecast(extractChildAreasJson(areaJson))
     };
 
-    if(extractTypeId(areaJson)) {
+    if (extractTypeId(areaJson)) {
       area.TypeId = extractTypeId(areaJson);
     }
 
@@ -141,7 +141,7 @@ function transformToAreas(areasJson) {
 
   var areas = [];
 
-  _.each(areasJson, function(areaJson) {
+  _.each(areasJson, function (areaJson) {
     var area = {
       Id: extractId(areaJson),
       Name: extractName(areaJson),
@@ -158,11 +158,11 @@ function denormalize(areasJson) {
   var parents = {};
   var children = {};
 
-  _.each(areasJson, function(areaJson) {
+  _.each(areasJson, function (areaJson) {
     parents["id" + areaJson.Id] = areaJson;
     children["id" + areaJson.Id] = {};
 
-    _.each(areaJson.Children, function(childArea) {
+    _.each(areaJson.Children, function (childArea) {
       children["id" + areaJson.Id]["id" + childArea.Id] = childArea;
     });
 
@@ -176,7 +176,7 @@ function denormalize(areasJson) {
 }
 
 module.exports = {
-  transformToForecast: function(json) {
+  transformToForecast: function (json) {
     return denormalize(transformToForecast(json));
   }
 };
