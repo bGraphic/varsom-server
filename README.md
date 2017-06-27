@@ -1,6 +1,9 @@
 # varsom-server
 Server responsible for importing data from api.nve.no into firebase. 
 
+Hosted on Heroku.
+- Should probably be moved to [Firebase Cloud Function](https://firebase.google.com/docs/functions/) to simplify operations. 
+
 To test the import job locally run: `heroku local:run node jobs/import-forecasts.js`
 
 ## api node in firebase database
