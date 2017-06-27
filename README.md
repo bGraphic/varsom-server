@@ -14,8 +14,8 @@ For Varsom in production they should be set to the values below
 ```
 {
     avalanche: "http://api01.nve.no/hydrology/forecast/avalanche/v3.0.0/api/RegionSummary/Detail/1/",
-    flood: "http://api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountySummary/1/",
-    landslide: "http://api01.nve.no/hydrology/forecast/landslide/v1.0.3/api/CountySummary/1/"
+    flood: "http://api01.nve.no/hydrology/forecast/flood/v1.0.4/api/CountySummary/1/",
+    landslide: "http://api01.nve.no/hydrology/forecast/landslide/v1.0.4/api/CountySummary/1/"
 }
 ```
 ### Testing
@@ -26,8 +26,8 @@ For testing purposes they can be changed to the test api, or set to import speci
 ```
 {
     avalanche: "http://api01.nve.no/hydrology/forecast/avalanche/v3.0.0/api/RegionSummary/Detail/1/2016-12-29/",
-    flood: "http://api01.nve.no/hydrology/forecast/flood/v1.0.3/api/CountySummary/1/2016-12-29/",
-    landslide: "http://api01.nve.no/hydrology/forecast/landslide/v1.0.3/api/CountySummary/1/2016-12-29/"
+    flood: "http://api01.nve.no/hydrology/forecast/flood/v1.0.4/api/CountySummary/1/2016-12-29/",
+    landslide: "http://api01.nve.no/hydrology/forecast/landslide/v1.0.4/api/CountySummary/1/2016-12-29/"
 }
 ```
 
