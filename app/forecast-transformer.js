@@ -79,9 +79,9 @@ function cleanForecast(forecastJson) {
 
 function extractForecast(areaJson) {
   if (areaJson.hasOwnProperty('AvalancheWarningList')) {
-    return areaJson.AvalancheWarningList;
+    return _.first(areaJson.AvalancheWarningList, 3);
   } else if (areaJson.hasOwnProperty('WarningList')) {
-    return areaJson.WarningList;
+    return _.first(areaJson.WarningList, 3);
   } else {
     return [];
   }
