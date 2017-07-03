@@ -2,6 +2,13 @@ var _ = require('underscore');
 var data = require('./data.js');
 var push = require('./push.js');
 
+var AVLANCHE_TYPE = 100000;
+var FLOOD_TYPE = 200000;
+var LANDSLIDE_TYPE = 300000;
+var RATING_NOT_TYPE = 10000;
+var MICRO_BLOG_NOT_TYPE = 20000;
+var AVALANCHE_PROB_NOT_TYPE = 30000;
+
 function highestForecastRating(forecast) {
   return _.reduce(_.values(forecast), function (memo, warning) {
     return warning.Rating > memo ? warning.Rating : memo;
@@ -13,7 +20,10 @@ function compareHighestForecastRating(oldForecast, forecast) {
   var newValue = highestForecastRating(forecast);
 
   if (oldValue !== newValue) {
-    return "Høyeste varslingsnivå endret fra " + oldValue + " til " + newValue + " for de neste 3 dagene."
+    return {
+      type: RATING_NOT_TYPE,
+      text: "Endring i varslingsnivå fra " + oldValue + " til " + newValue + "."
+    }
   }
 }
 
@@ -33,7 +43,10 @@ function compareMicroBlogPosts(oldForecast, forecast) {
   var newValue = newestMicroBlogPostDate(forecast);
 
   if (newValue > oldValue) {
-    return "Ny varslingsoppdatering."
+    return {
+      type: MICRO_BLOG_NOT_TYPE,
+      text: "Ny varslingsoppdatering."
+    }
   }
 }
 
@@ -51,7 +64,10 @@ function compareMostImportantAvalancheProblem(oldForecast, forecast) {
   var newValue = mostImportantAvalancheProblem(forecast);
 
   if (oldValue && newValue && (oldValue.problemTypeId !== newValue.problemTypeId || oldValue.causeId !== newValue.causeId)) {
-    return "Endring i det viktigste snøskredproblemet.";
+    return {
+      type: AVALANCHE_PROB_NOT_TYPE,
+      text: "Endring i det viktigste snøskredproblemet."
+    }
   }
 }
 
@@ -60,24 +76,35 @@ function notifySubscribers(warningType, areaId, areaName, message) {
     return;
   }
 
+  var notId = parseInt(areaId);
+  notId += parseInt(message.type);
+
   if ('avalanche' === warningType) {
-    warningType = "snøskred";
+    warningType = "Snøskred";
+    notId += parseInt(AVLANCHE_TYPE);
   } else if ('flood' === warningType) {
-    warningType = "flom";
+    warningType = "Flom";
+    notId += parseInt(FLOOD_TYPE);
   } else if ('landslide' === warningType) {
-    warningType = "jordskred";
+    warningType = "Jordskred";
+    notId += parseInt(LANDSLIDE_TYPE);
   }
 
   return data.fetchSubscriptions(areaId)
     .then(function (subscribers) {
       return push.sendPush(subscribers, {
+        title: areaName + " - " + warningType,
+        message: message.text,
+        payload: {
+          areaId: areaId
+        },
         ios: {
-          title: "Oppdatering",
-          message: areaName + " - " + warningType + ": " + message,
-          payload: {
-            areaId: areaId
-          },
           priority: 10
+        },
+        android: {
+          data: {
+            notId: notId
+          }
         }
       });
     });
